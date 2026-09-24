@@ -1,4 +1,4 @@
-# Lab 1 — Chest X-ray pneumonia classification
+# Lab 1 : Chest X-ray pneumonia classification
 
 ## Goal
 
