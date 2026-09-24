@@ -1,0 +1,57 @@
+# Lab 1 — Chest X-ray pneumonia classification
+
+## Goal
+
+Classify chest X-rays as `NORMAL` or `PNEUMONIA` using **ResNet18** and **ResNet50**. The single-file program defines a custom PyTorch `ChestXrayDataset` and compares accuracy and F1 over 10 epochs.
+
+## Run in Google Colab
+
+1. Choose a GPU runtime.
+2. Upload `lab1_colab.py` to Colab.
+3. Run in a new code cell:
+
+   ```python
+   !python lab1_colab.py
+   ```
+
+The public [Kaggle Chest X-Ray Images (Pneumonia) dataset](https://www.kaggle.com/datasets/paultimothymooney/chest-xray-pneumonia) is downloaded automatically. To use an extracted local dataset instead, change `DATA_DIR = None` near the top of the script to the path containing `train/NORMAL`, `train/PNEUMONIA`, `test/NORMAL`, and `test/PNEUMONIA`. This file runs directly without command-line arguments. Results are written to `/content/lab1_outputs/` in Colab. The program also creates a ZIP of that folder for download after training.
+
+Requires a recent Google Colab runtime with PyTorch, torchvision, scikit-learn, Pillow, NumPy, and Matplotlib. The program installs `kagglehub` if needed. With the default settings, pretrained ImageNet weights are downloaded once. If that download fails, the code warns and starts from random weights, which changes the results.
+
+## Experiment settings
+
+| Item | Setting |
+| --- | --- |
+| Split | Original training images split into 4,433 train / 783 validation (stratified, seed 42); original 624-image test set |
+| Architectures | torchvision ResNet18 and ResNet50, ImageNet pretrained; final fully connected layer replaced with 2 outputs |
+| Images | RGB, 224 × 224; ImageNet normalization |
+| Training augmentation | Random rotation up to 8°, brightness/contrast jitter up to 0.1 |
+| Optimizer / loss | AdamW (LR 1e-4, weight decay 1e-4) / class-weighted cross entropy |
+| Training | 10 epochs, batch size 32 |
+| Checkpoint | Best validation F1, with validation accuracy as tie-breaker |
+
+The test set is measured at every epoch to generate the assignment's requested testing curves. Checkpoints are selected using validation metrics, not test metrics.
+
+## Results from this run
+
+| Model | Best validation epoch | Final test accuracy of saved checkpoint | Final test F1 |
+| --- | ---: | ---: | ---: |
+| ResNet18 | 3 | 82.85% | 0.8788 |
+| ResNet50 | 9 | 79.33% | 0.8578 |
+
+The **highest observed test accuracy across the logged epochs** was **91.35%**, with **F1 0.9337**, for **ResNet18 at epoch 2**. Its weights were not saved: the program saves the best *validation* checkpoint (epoch 3 for ResNet18). Therefore, the highest-accuracy heatmap below is **reconstructed from the exact accuracy/F1 values in `epoch_metrics.csv` and the test-set class totals (234 NORMAL, 390 PNEUMONIA)**, not by rerunning inference on an epoch-2 checkpoint. The integer matrix is `[[190, 44], [10, 380]]` (rows: true class; columns: predicted class), and reproduces both metrics exactly. Do not describe this as a saved epoch-2 model.
+
+## Files
+
+- [`lab1_colab.py`](lab1_colab.py): standalone training/evaluation code.
+- [`results/accuracy_curves.png`](results/accuracy_curves.png): both models, train/validation/test accuracy by epoch.
+- [`results/f1_curves.png`](results/f1_curves.png): both models, train/validation/test F1 by epoch.
+- [`results/highest_test_accuracy_heatmap.png`](results/highest_test_accuracy_heatmap.png): reconstructed matrix for the highest observed test accuracy.
+- `results/resnet18_confusion_matrix.png`, `results/resnet50_confusion_matrix.png`: actual inference for the saved validation-selected checkpoints.
+- `results/epoch_metrics.csv`, `results/summary.json`: original Colab measurements.
+
+The `.pt` weights were left out of this GitHub-ready archive because they are large (about 45 MB and 94 MB). The original `lab1_outputs.zip` contains them; run the script to reproduce them. Dataset images are also not included.
+
+## Report checklist
+
+Include introduction, model and custom dataset/augmentation details, the highest test accuracy and F1 from the epoch log, the comparison curves, the heatmap with the reconstruction note, discussion of the difference between validation and test performance, and the GitHub repository link. Submit the PDF separately according to the course instructions.

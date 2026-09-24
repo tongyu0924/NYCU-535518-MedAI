@@ -1,0 +1,44 @@
+{
+  "resnet18": {
+    "best_validation_epoch": 3,
+    "final_test": {
+      "loss": 0.7340422148155108,
+      "accuracy": 82.8525641025641,
+      "precision": 0.7870182555780934,
+      "recall": 0.9948717948717949,
+      "f1": 0.8788221970554927
+    },
+    "confusion_matrix": [
+      [
+        129,
+        105
+      ],
+      [
+        2,
+        388
+      ]
+    ],
+    "weights_file": "resnet18_best.pt"
+  },
+  "resnet50": {
+    "best_validation_epoch": 9,
+    "final_test": {
+      "loss": 1.4577298626675435,
+      "accuracy": 79.32692307692308,
+      "precision": 0.7524177949709865,
+      "recall": 0.9974358974358974,
+      "f1": 0.8577728776185226
+    },
+    "confusion_matrix": [
+      [
+        106,
+        128
+      ],
+      [
+        1,
+        389
+      ]
+    ],
+    "weights_file": "resnet50_best.pt"
+  }
+}
